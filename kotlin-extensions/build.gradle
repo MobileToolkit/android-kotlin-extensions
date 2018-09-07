@@ -1,8 +1,14 @@
+plugins {
+    id 'com.jfrog.bintray' version '1.7.3'
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 16
@@ -21,14 +27,62 @@ android {
 }
 
 dependencies {
-    implementation "com.android.support:appcompat-v7:$android_support_version"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.androidSupportLibraryVersion}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
 }
-repositories {
-    mavenCentral()
+
+group = 'org.mobiletoolkit.android.databinding'
+version = android.defaultConfig.versionName
+
+publishing {
+    publications {
+        Production(MavenPublication) {
+            artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+            groupId group
+            artifactId project.name
+            version android.defaultConfig.versionName
+
+            pom.withXml {
+                configurations.compile.allDependencies.each {
+                    if (it.name != 'unspecified') {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    user = rootProject.ext.bintrayUser
+    key = rootProject.ext.bintrayAPIKey
+    dryRun = false
+    override = false
+    publish = true
+    pkg {
+        repo = 'public'
+        name = project.name
+        userOrg = 'mobiletoolkit'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/MobileToolkit/kotlin-extensions-android.git'
+
+        version {
+            name = android.defaultConfig.versionName
+            released  = new Date()
+            vcsTag = android.defaultConfig.versionName
+            gpg {
+                sign = true
+                passphrase = rootProject.ext.bintrayGPGPassword
+            }
+        }
+    }
+    publications = ['Production']
 }

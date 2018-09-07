@@ -1,0 +1,21 @@
+language: android
+jdk: oraclejdk8
+sudo: false
+
+android:
+  components:
+  - platform-tools
+  - tools
+  - build-tools-27.0.3
+  - android-27
+
+script:
+    - ./gradlew clean build
+
+deploy:
+  provider: script
+  script: ./gradlew :clean :kotlin-extensions:assembleRelease :kotlin-extensions:bintrayUpload
+  skip_cleanup: true
+  dry-run: false
+  on:
+    branch: master

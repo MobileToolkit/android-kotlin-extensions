@@ -1,6 +1,7 @@
 package org.mobiletoolkit.android.kotlin_extensions
 
 import android.accounts.AccountManager
+import android.annotation.SuppressLint
 import android.app.*
 import android.app.admin.DevicePolicyManager
 import android.app.job.JobScheduler
@@ -94,6 +95,7 @@ val Context.vibrator: Vibrator
     get() = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
 val Context.wallpaperService: WallpaperService
+    @SuppressLint("ServiceCast")
     get() = getSystemService(Context.WALLPAPER_SERVICE) as WallpaperService
 
 val Context.wifiManager: WifiManager
