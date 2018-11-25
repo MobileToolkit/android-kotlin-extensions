@@ -1,20 +1,13 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'org.ajoberstar:grgit:2.0.1'
-    }
-}
+def gitCommitCount = Integer.parseInt('git rev-list HEAD --count'.execute([], project.rootDir).text.trim())
 
-import org.ajoberstar.grgit.Grgit
+def gitCurrentTag = 'git tag'.execute([], project.rootDir).text.trim().isAllWhitespace() ? "0.0.0-DEV-$gitCommitCount" : 'git describe --tags'.execute([], project.rootDir).text.trim()
+
+def gitCurrentCommitTimestamp = Integer.parseInt('git log -1 --pretty=format:%ct'.execute([], project.rootDir).text.trim())
 
 ext {
-    git = Grgit.open(currentDir: projectDir)
-
-    gitVersionName = git.describe() == null ? '0.0.1-DEV' : git.describe()
-    gitVersionCode = git.tag.list().size() == 0 ? 1 : git.tag.list().size()
-    gitVersionCodeTime = git.head().time
+    gitVersionCode = gitCommitCount
+    gitVersionName = gitCurrentTag
+    gitVersionCodeTime = gitCurrentCommitTimestamp
 }
 
 task printVersion() {
