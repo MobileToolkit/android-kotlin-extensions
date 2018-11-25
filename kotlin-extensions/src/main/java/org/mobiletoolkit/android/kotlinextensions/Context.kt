@@ -1,7 +1,6 @@
-package org.mobiletoolkit.android.kotlin_extensions
+package org.mobiletoolkit.android.kotlinextensions
 
 import android.accounts.AccountManager
-import android.annotation.SuppressLint
 import android.app.*
 import android.app.admin.DevicePolicyManager
 import android.app.job.JobScheduler
@@ -35,7 +34,6 @@ import android.nfc.NfcManager
 import android.os.*
 import android.os.storage.StorageManager
 import android.print.PrintManager
-import android.service.wallpaper.WallpaperService
 import android.support.annotation.RequiresApi
 import android.telecom.TelecomManager
 import android.telephony.CarrierConfigManager
@@ -94,9 +92,8 @@ val Context.telephonyManager: TelephonyManager
 val Context.vibrator: Vibrator
     get() = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
-val Context.wallpaperService: WallpaperService
-    @SuppressLint("ServiceCast")
-    get() = getSystemService(Context.WALLPAPER_SERVICE) as WallpaperService
+//val Context.wallpaperService: WallpaperService
+//    get() = getSystemService(Context.WALLPAPER_SERVICE) as WallpaperService
 
 val Context.wifiManager: WifiManager
     get() = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager

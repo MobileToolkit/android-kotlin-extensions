@@ -1,4 +1,4 @@
-package org.mobiletoolkit.android.kotlin_extensions
+package org.mobiletoolkit.android.kotlinextensions
 
 import android.graphics.Color
 import android.support.annotation.ColorInt
@@ -12,7 +12,8 @@ fun parseColorOrNull(colorString: String?): Int? {
     if (colorString?.isNotBlank() == true) {
         try {
             return Color.parseColor(colorString)
-        } catch (exception: IllegalArgumentException) {}
+        } catch (exception: IllegalArgumentException) {
+        }
     }
 
     return null

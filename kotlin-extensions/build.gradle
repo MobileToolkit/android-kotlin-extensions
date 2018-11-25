@@ -1,10 +1,10 @@
 plugins {
-    id 'com.jfrog.bintray' version '1.7.3'
+    id 'com.jfrog.bintray' version '1.8.4'
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'digital.wup.android-maven-publish'
 apply plugin: 'kotlin-android'
-apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -15,8 +15,8 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName '1.0.0'
-
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        consumerProguardFiles 'proguard-rules.pro'
     }
     buildTypes {
         release {
@@ -24,11 +24,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+    lintOptions {
+//        htmlReport true
+//        htmlOutput file('lint-report.html')
+        abortOnError true
+        warningsAsErrors true
+    }
 }
 
 dependencies {
     implementation "com.android.support:appcompat-v7:${rootProject.ext.androidSupportLibraryVersion}"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
@@ -36,27 +46,16 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
 }
 
-group = 'org.mobiletoolkit.android.databinding'
-version = android.defaultConfig.versionName
+archivesBaseName = 'org.mobiletoolkit.android.kotlinextensions'
 
 publishing {
     publications {
-        Production(MavenPublication) {
-            artifact("$buildDir/outputs/aar/${project.name}-release.aar")
-            groupId group
-            artifactId project.name
-            version android.defaultConfig.versionName
+        kotlinExtensions(MavenPublication) {
+            groupId = 'org.mobiletoolkit.android.kotlinextensions'
+            artifactId = 'kotlinextensions'
+            version = android.defaultConfig.versionName
 
-            pom.withXml {
-                configurations.compile.allDependencies.each {
-                    if (it.name != 'unspecified') {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
-                    }
-                }
-            }
+            from components.android
         }
     }
 }
@@ -84,5 +83,5 @@ bintray {
             }
         }
     }
-    publications = ['Production']
+    publications = ['kotlinExtensions']
 }

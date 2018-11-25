@@ -1,2 +1,2 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.mobiletoolkit.android.kotlin_extensions" />
+    package="org.mobiletoolkit.android.kotlinextensions" />
