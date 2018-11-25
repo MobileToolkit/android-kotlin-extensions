@@ -1,4 +1,4 @@
-package org.mobiletoolkit.android.kotlin_extensions
+package org.mobiletoolkit.android.kotlinextensions
 
 import android.view.View
 import android.view.ViewTreeObserver

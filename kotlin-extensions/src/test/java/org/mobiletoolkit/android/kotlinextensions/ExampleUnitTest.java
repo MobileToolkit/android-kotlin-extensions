@@ -1,4 +1,4 @@
-package org.mobiletoolkit.android.kotlin_extensions;
+package org.mobiletoolkit.android.kotlinextensions;
 
 import org.junit.Test;
 
