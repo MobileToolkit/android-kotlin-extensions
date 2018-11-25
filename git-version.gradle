@@ -1,0 +1,24 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.ajoberstar:grgit:2.0.1'
+    }
+}
+
+import org.ajoberstar.grgit.Grgit
+
+ext {
+    git = Grgit.open(currentDir: projectDir)
+
+    gitVersionName = git.describe() == null ? '0.0.1-DEV' : git.describe()
+    gitVersionCode = git.tag.list().size() == 0 ? 1 : git.tag.list().size()
+    gitVersionCodeTime = git.head().time
+}
+
+task printVersion() {
+    println("GIT Version Name: $gitVersionName")
+    println("GIT Version Code: $gitVersionCode")
+    println("GIT Version Code Time: $gitVersionCodeTime")
+}

@@ -12,9 +12,9 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 27
-        versionCode 1
-        versionName '1.0.0'
+        targetSdkVersion 28
+        versionCode rootProject.ext.gitVersionCode
+        versionName rootProject.ext.gitVersionName
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         consumerProguardFiles 'proguard-rules.pro'
     }
