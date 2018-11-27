@@ -1,1 +1,1 @@
-include ':kotlin-extensions'
+include ':core', ':firebase'

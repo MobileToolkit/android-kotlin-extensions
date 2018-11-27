@@ -1,8 +1,6 @@
-# android-kotlin-extensions
+# extensions-android
 
-[![Build Status](https://travis-ci.org/MobileToolkit/kotlin-extensions-android.svg?branch=master)](https://travis-ci.org/MobileToolkit/kotlin-extensions-android)
-
-Collection of Kotlin extensions for Android SDK.
+[![Build Status](https://travis-ci.org/MobileToolkit/extensions-android.svg?branch=master)](https://travis-ci.org/MobileToolkit/extensions-android)
 
 ## Installation
 
@@ -14,7 +12,9 @@ To use the library, first include it your project using Gradle
     }
 
 	dependencies {
-	    implementation 'org.mobiletoolkit.android.kotlinextensions:kotlinextensions:{RELEASE_TAG}'
+	    implementation 'org.mobiletoolkit.android.extensions:core:{RELEASE_TAG}'
+
+	    implementation 'org.mobiletoolkit.android.extensions:firebase:{RELEASE_TAG}'
 	}
 
 
