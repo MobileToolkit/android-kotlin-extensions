@@ -12,6 +12,9 @@ buildscript {
         bintrayUser = System.getenv('BINTRAY_USER')
         bintrayAPIKey = System.getenv('BINTRAY_API_KEY')
         bintrayGPGPassword = System.getenv('BINTRAY_GPG_PASSWORD')
+
+        groupId = 'org.mobiletoolkit.android.extensions'
+        vcsUrl = 'https://github.com/MobileToolkit/extensions-android.git'
     }
     repositories {
         google()

@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/kotlin-extensions/kotlin-extensions.iml" filepath="$PROJECT_DIR$/kotlin-extensions/kotlin-extensions.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kotlin-extensions-android.iml" filepath="$PROJECT_DIR$/kotlin-extensions-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions-android.iml" filepath="$PROJECT_DIR$/extensions-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/firebase/firebase.iml" filepath="$PROJECT_DIR$/firebase/firebase.iml" />
     </modules>
   </component>
 </project>
