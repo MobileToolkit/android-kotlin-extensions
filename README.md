@@ -12,7 +12,7 @@ To use the library, first include it your project using Gradle
     }
 
 	dependencies {
-	    implementation 'org.mobiletoolkit.android.extensions:core:{RELEASE_TAG}'
+	    implementation 'org.mobiletoolkit.android.extensions:extensions:{RELEASE_TAG}'
 
 	    implementation 'org.mobiletoolkit.android.extensions:firebase:{RELEASE_TAG}'
 	}

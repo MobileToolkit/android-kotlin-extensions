@@ -48,13 +48,13 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:${rootProject.ext.kotlinVersion}"
 }
 
-archivesBaseName = "${rootProject.ext.groupId}.core"
+archivesBaseName = "${rootProject.ext.groupId}.extensions"
 
 publishing {
     publications {
         core(MavenPublication) {
             groupId = rootProject.ext.groupId
-            artifactId = 'core'
+            artifactId = 'extensions'
             version = android.defaultConfig.versionName
 
             from components.android
