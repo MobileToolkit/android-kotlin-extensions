@@ -15,7 +15,7 @@ import android.view.ViewTreeObserver
 inline fun View.waitForLayout(crossinline block: () -> Unit) = with(viewTreeObserver) {
     addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
-            removeOnGlobalLayoutListener(this)
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
             block()
         }
     })
@@ -30,7 +30,7 @@ inline fun <T : View> T.afterMeasured(crossinline block: T.() -> Unit) = with(vi
     addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
             if (measuredWidth > 0 && measuredHeight > 0) {
-                removeOnGlobalLayoutListener(this)
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
                 block()
             }
         }
