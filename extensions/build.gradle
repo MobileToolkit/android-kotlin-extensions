@@ -52,7 +52,7 @@ archivesBaseName = "${rootProject.ext.groupId}.extensions"
 
 publishing {
     publications {
-        core(MavenPublication) {
+        extensions(MavenPublication) {
             groupId = rootProject.ext.groupId
             artifactId = 'extensions'
             version = android.defaultConfig.versionName
@@ -85,5 +85,5 @@ bintray {
             }
         }
     }
-    publications = ['core']
+    publications = ['extensions']
 }

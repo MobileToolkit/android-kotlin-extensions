@@ -28,16 +28,16 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
     private val collectionReference: CollectionReference
         get() = db.collection(collectionPath)
 
-    override fun exists(key: String): Boolean {
-        Log.v(TAG, "exists -> key: $key | collectionPath: $collectionPath")
+    override fun exists(identifier: String): Boolean {
+        Log.v(TAG, "exists -> identifier: $identifier | collectionPath: $collectionPath")
 
-        return Tasks.await(documentExists(key))
+        return Tasks.await(documentExists(identifier))
     }
 
-    override fun get(key: String): Entity? {
-        Log.v(TAG, "get -> key: $key | collectionPath: $collectionPath")
+    override fun get(identifier: String): Entity? {
+        Log.v(TAG, "get -> identifier: $identifier | collectionPath: $collectionPath")
 
-        return Tasks.await(getDocument(key))
+        return Tasks.await(getDocument(identifier))
     }
 
     override fun create(entity: Entity): Boolean {
@@ -58,10 +58,10 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         return Tasks.await(deleteDocument(entity))
     }
 
-    override fun delete(key: String): Boolean {
-        Log.v(TAG, "delete -> key: $key | collectionPath: $collectionPath")
+    override fun delete(identifier: String): Boolean {
+        Log.v(TAG, "delete -> identifier: $identifier | collectionPath: $collectionPath")
 
-        return Tasks.await(deleteDocument(key))
+        return Tasks.await(deleteDocument(identifier))
     }
 
     override fun get(): List<Entity> {
@@ -70,22 +70,22 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         return Tasks.await(getDocuments())
     }
 
-    override fun exists(key: String, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "exists -> key: $key | collectionPath: $collectionPath")
+    override fun exists(identifier: String, onCompleteListener: OnCompleteListener<Boolean>) {
+        Log.v(TAG, "exists -> identifier: $identifier | collectionPath: $collectionPath")
 
-        documentExists(key).addOnCompleteListener(onCompleteListener)
+        documentExists(identifier).addOnCompleteListener(onCompleteListener)
     }
 
-    override fun get(key: String, onCompleteListener: OnCompleteListener<Entity?>) {
-        Log.v(TAG, "get -> key: $key | collectionPath: $collectionPath")
+    override fun get(identifier: String, onCompleteListener: OnCompleteListener<Entity?>) {
+        Log.v(TAG, "get -> identifier: $identifier | collectionPath: $collectionPath")
 
-        getDocument(key).addOnCompleteListener(onCompleteListener)
+        getDocument(identifier).addOnCompleteListener(onCompleteListener)
     }
 
-    fun get(key: String, listener: RepositoryListener<Entity>) {
-        Log.v(TAG, "get -> key: $key | collectionPath: $collectionPath")
+    fun get(identifier: String, listener: RepositoryListener<Entity>) {
+        Log.v(TAG, "get -> identifier: $identifier | collectionPath: $collectionPath")
 
-        collectionReference.document(key).addSnapshotListener { documentSnapshot, exception ->
+        collectionReference.document(identifier).addSnapshotListener { documentSnapshot, exception ->
             listener(documentSnapshot?.toObjectWithReference(entityClazz), exception)
         }
     }
@@ -108,10 +108,10 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         deleteDocument(entity).addOnCompleteListener(onCompleteListener)
     }
 
-    override fun delete(key: String, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "delete -> key: $key | collectionPath: $collectionPath")
+    override fun delete(identifier: String, onCompleteListener: OnCompleteListener<Boolean>) {
+        Log.v(TAG, "delete -> identifier: $identifier | collectionPath: $collectionPath")
 
-        deleteDocument(key).addOnCompleteListener(onCompleteListener)
+        deleteDocument(identifier).addOnCompleteListener(onCompleteListener)
     }
 
     override fun get(onCompleteListener: OnCompleteListener<List<Entity>>) {
@@ -128,18 +128,18 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         }
     }
 
-    private fun documentExists(key: String): Task<Boolean> {
-        Log.v(TAG, "documentExists -> collectionPath: $collectionPath | key: $key")
+    private fun documentExists(identifier: String): Task<Boolean> {
+        Log.v(TAG, "documentExists -> collectionPath: $collectionPath | identifier: $identifier")
 
-        return collectionReference.document(key).get().continueWith {
+        return collectionReference.document(identifier).get().continueWith {
             it.result?.exists() == true
         }
     }
 
-    private fun getDocument(key: String): Task<Entity?> {
-        Log.v(TAG, "getDocument -> collectionPath: $collectionPath | key: $key")
+    private fun getDocument(identifier: String): Task<Entity?> {
+        Log.v(TAG, "getDocument -> collectionPath: $collectionPath | identifier: $identifier")
 
-        return collectionReference.document(key).get().continueWith {
+        return collectionReference.document(identifier).get().continueWith {
             it.result?.toObjectWithReference(entityClazz)
         }
     }
@@ -166,10 +166,10 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         return deleteDocument(entity.documentReference.id)
     }
 
-    private fun deleteDocument(key: String): Task<Boolean> {
-        Log.v(TAG, "deleteDocument -> key: $key | collectionPath: $collectionPath")
+    private fun deleteDocument(identifier: String): Task<Boolean> {
+        Log.v(TAG, "deleteDocument -> identifier: $identifier | collectionPath: $collectionPath")
 
-        return collectionReference.document(key).delete().continueWith {
+        return collectionReference.document(identifier).delete().continueWith {
             it.isSuccessful
         }
     }
