@@ -14,10 +14,14 @@ interface HasDocumentReference {
 }
 
 @IgnoreExtraProperties
-abstract class Model : Model, HasDocumentReference {
+abstract class Model : Model<String>, HasDocumentReference {
 
     @get:Exclude
     override lateinit var documentReference : DocumentReference
+
+    @get:Exclude
+    override val identifier: String
+        get() = documentReference.id
 }
 
 fun <Entity : HasDocumentReference> DocumentSnapshot.toObjectWithReference(valueType: Class<Entity>): Entity? =
