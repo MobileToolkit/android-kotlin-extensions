@@ -5,7 +5,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 /**
  * Created by Sebastian Owodzin on 14/08/2018.
  */
-interface AsyncRepository<Entity : Model<Identifier>, Identifier> : Repository<Entity, Identifier> {
+interface AsyncRepository<Entity : Model<Identifier>, Identifier> {
 
     fun exists(identifier: Identifier, onCompleteListener: OnCompleteListener<Boolean>)
 

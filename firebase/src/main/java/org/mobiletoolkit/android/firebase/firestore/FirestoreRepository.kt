@@ -3,7 +3,6 @@ package org.mobiletoolkit.android.firebase.firestore
 import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -27,48 +26,6 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
 
     private val collectionReference: CollectionReference
         get() = db.collection(collectionPath)
-
-    override fun exists(identifier: String): Boolean {
-        Log.v(TAG, "exists -> identifier: $identifier | collectionPath: $collectionPath")
-
-        return Tasks.await(documentExists(identifier))
-    }
-
-    override fun get(identifier: String): Entity? {
-        Log.v(TAG, "get -> identifier: $identifier | collectionPath: $collectionPath")
-
-        return Tasks.await(getDocument(identifier))
-    }
-
-    override fun create(entity: Entity): Boolean {
-        Log.v(TAG, "create -> entity: $entity | collectionPath: $collectionPath")
-
-        return Tasks.await(createDocument(entity))
-    }
-
-    override fun update(entity: Entity): Boolean {
-        Log.v(TAG, "update -> entity: $entity | collectionPath: $collectionPath")
-
-        return Tasks.await(updateDocument(entity))
-    }
-
-    override fun delete(entity: Entity): Boolean {
-        Log.v(TAG, "delete -> entity: $entity | collectionPath: $collectionPath")
-
-        return Tasks.await(deleteDocument(entity))
-    }
-
-    override fun delete(identifier: String): Boolean {
-        Log.v(TAG, "delete -> identifier: $identifier | collectionPath: $collectionPath")
-
-        return Tasks.await(deleteDocument(identifier))
-    }
-
-    override fun get(): List<Entity> {
-        Log.v(TAG, "get -> collectionPath: $collectionPath")
-
-        return Tasks.await(getDocuments())
-    }
 
     override fun exists(identifier: String, onCompleteListener: OnCompleteListener<Boolean>) {
         Log.v(TAG, "exists -> identifier: $identifier | collectionPath: $collectionPath")
