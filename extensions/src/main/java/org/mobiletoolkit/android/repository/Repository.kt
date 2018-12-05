@@ -18,6 +18,8 @@ interface Repository<Entity : Model<Identifier>, Identifier> {
 
     fun delete(entity: Entity): Boolean
     fun delete(identifier: Identifier): Boolean
+    fun delete(vararg entities: Entity): Boolean
+    fun delete(vararg identifiers: Identifier): Boolean
 
     fun get(): List<Entity>
 }
