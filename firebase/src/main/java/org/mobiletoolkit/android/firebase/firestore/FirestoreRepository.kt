@@ -17,56 +17,82 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         private const val TAG = "FirestoreRepository"
     }
 
-    val entityClazz: Class<Entity>
+    val entityClazz: Class<Entity>  //TODO: make this automatic
+//    fun <T: Entity> buildEntity(documentSnapshot: DocumentSnapshot?, ofClass: Class<T>): T? =
+//        documentSnapshot?.toObjectWithReference(ofClass)
+//
+//    inline fun <reified T : Entity> buildEntity(documentSnapshot: DocumentSnapshot?): T? = buildEntity(documentSnapshot, T::class.java)
 
     val collectionPath: String
 
-    private val db: FirebaseFirestore
+    val db: FirebaseFirestore
         get() = FirebaseFirestore.getInstance()
 
-    private val collectionReference: CollectionReference
+    val collectionReference: CollectionReference
         get() = db.collection(collectionPath)
 
     override fun exists(identifier: String, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "exists -> identifier: $identifier | collectionPath: $collectionPath")
+        Log.v(TAG, "exists -> collectionPath: $collectionPath | identifier: $identifier")
 
         documentExists(identifier).addOnCompleteListener(onCompleteListener)
     }
 
     override fun get(identifier: String, onCompleteListener: OnCompleteListener<Entity?>) {
-        Log.v(TAG, "get -> identifier: $identifier | collectionPath: $collectionPath")
+        Log.v(TAG, "get -> collectionPath: $collectionPath | identifier: $identifier")
 
         getDocument(identifier).addOnCompleteListener(onCompleteListener)
     }
 
-    fun get(identifier: String, listener: RepositoryListener<Entity>) {
-        Log.v(TAG, "get -> identifier: $identifier | collectionPath: $collectionPath")
+    fun get(identifier: String, callback: RepositoryEventCallback<Entity>) {
+        Log.v(TAG, "get -> collectionPath: $collectionPath | identifier: $identifier")
 
         collectionReference.document(identifier).addSnapshotListener { documentSnapshot, exception ->
-            listener(documentSnapshot?.toObjectWithReference(entityClazz), exception)
+            callback(documentSnapshot?.toObjectWithReference(entityClazz), exception)
         }
     }
 
-    override fun create(entity: Entity, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "create -> entity: $entity | collectionPath: $collectionPath")
+    override fun create(entity: Entity, identifier: String?, onCompleteListener: OnCompleteListener<Boolean>) {
+        Log.v(TAG, "create -> collectionPath: $collectionPath | entity: $entity | identifier: $identifier")
 
-        createDocument(entity).addOnCompleteListener(onCompleteListener)
+        createDocument(entity, identifier).addOnCompleteListener(onCompleteListener)
+    }
+
+    override fun create(vararg entities: Entity, onCompleteListener: OnCompleteListener<Boolean>) {
+        Log.v(TAG, "create -> collectionPath: $collectionPath | entities: $entities")
+
+        createDocuments(entities.toList()).addOnCompleteListener(onCompleteListener)
+    }
+
+    override fun create(
+        entities: List<Entity>,
+        identifiers: List<String?>?,
+        onCompleteListener: OnCompleteListener<Boolean>
+    ) {
+        Log.v(TAG, "create -> collectionPath: $collectionPath | entities: $entities | identifiers: $identifiers")
+
+        createDocuments(entities, identifiers).addOnCompleteListener(onCompleteListener)
     }
 
     override fun update(entity: Entity, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "update -> entity: $entity | collectionPath: $collectionPath")
+        Log.v(TAG, "update -> collectionPath: $collectionPath | entity: $entity")
 
         updateDocument(entity).addOnCompleteListener(onCompleteListener)
     }
 
+    override fun update(vararg entities: Entity, onCompleteListener: OnCompleteListener<Boolean>) {
+        Log.v(TAG, "update -> collectionPath: $collectionPath | entities: $entities")
+
+        updateDocuments(entities.toList()).addOnCompleteListener(onCompleteListener)
+    }
+
     override fun delete(entity: Entity, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "delete -> entity: $entity | collectionPath: $collectionPath")
+        Log.v(TAG, "delete -> collectionPath: $collectionPath | entity: $entity")
 
         deleteDocument(entity).addOnCompleteListener(onCompleteListener)
     }
 
     override fun delete(identifier: String, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "delete -> identifier: $identifier | collectionPath: $collectionPath")
+        Log.v(TAG, "delete -> collectionPath: $collectionPath | identifier: $identifier")
 
         deleteDocument(identifier).addOnCompleteListener(onCompleteListener)
     }
@@ -77,15 +103,16 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         getDocuments().addOnCompleteListener(onCompleteListener)
     }
 
-    fun get(listener: RepositoryListener<List<Entity>>) {
+    fun get(callback: RepositoryEventCallback<List<Entity>>) {
         Log.v(TAG, "get -> collectionPath: $collectionPath")
 
         collectionReference.addSnapshotListener { querySnapshot, exception ->
-            listener(querySnapshot?.mapNotNull { it.toObjectWithReference(entityClazz) } ?: listOf(), exception)
+            callback(querySnapshot?.mapNotNull { it.toObjectWithReference(entityClazz) } ?: listOf(),
+                exception)
         }
     }
 
-    private fun documentExists(identifier: String): Task<Boolean> {
+    fun documentExists(identifier: String): Task<Boolean> {
         Log.v(TAG, "documentExists -> collectionPath: $collectionPath | identifier: $identifier")
 
         return collectionReference.document(identifier).get().continueWith {
@@ -93,7 +120,7 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         }
     }
 
-    private fun getDocument(identifier: String): Task<Entity?> {
+    fun getDocument(identifier: String): Task<Entity?> {
         Log.v(TAG, "getDocument -> collectionPath: $collectionPath | identifier: $identifier")
 
         return collectionReference.document(identifier).get().continueWith {
@@ -101,37 +128,88 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         }
     }
 
-    private fun createDocument(entity: Entity): Task<Boolean> {
-        Log.v(TAG, "createDocument -> entity: $entity | collectionPath: $collectionPath")
+    fun createDocument(entity: Entity, identifier: String? = null): Task<Boolean> {
+        Log.v(TAG, "createDocument -> collectionPath: $collectionPath | entity: $entity | identifier: $identifier")
 
-        return collectionReference.document().set(entity).continueWith {
+        return with(collectionReference) {
+            (identifier?.let { docId ->
+                document(docId)
+            } ?: document()).set(entity).continueWith {
+                it.isSuccessful
+            }
+        }
+    }
+
+    fun createDocuments(entities: List<Entity>, identifiers: List<String?>? = null): Task<Boolean> {
+        Log.v(
+            TAG,
+            "createDocuments -> collectionPath: $collectionPath | entities: $entities | identifier: $identifiers"
+        )
+
+        //TODO - split into batches of 20
+
+        val batch = db.batch()
+
+        entities.forEachIndexed { index, entity ->
+            val docRef = with(collectionReference) {
+                (identifiers?.get(index)?.let { docId ->
+                    document(docId)
+                } ?: document())
+            }
+
+            batch.set(docRef, entity)
+        }
+
+        return batch.commit().continueWith {
             it.isSuccessful
         }
     }
 
-    private fun updateDocument(entity: Entity): Task<Boolean> {
-        Log.v(TAG, "updateDocument -> entity: $entity | collectionPath: $collectionPath")
+    fun updateDocument(entity: Entity): Task<Boolean> {
+        Log.v(TAG, "updateDocument -> collectionPath: $collectionPath | entity: $entity")
 
-        return collectionReference.document(entity.documentReference.id).set(entity, SetOptions.merge()).continueWith {
+        entity.identifier?.let { identifier ->
+            return collectionReference.document(identifier).set(entity, SetOptions.merge()).continueWith {
+                it.isSuccessful
+            }
+        }
+    }
+
+    fun updateDocuments(entities: List<Entity>): Task<Boolean> {
+        Log.v(TAG, "updateDocuments -> collectionPath: $collectionPath | entities: $entities")
+
+        //TODO - split into batches of 20
+
+        val batch = db.batch()
+
+        entities.forEach { entity ->
+            entity.documentReference?.let { docRef ->
+                batch.set(docRef, entity, SetOptions.merge())
+            }
+        }
+
+        return batch.commit().continueWith {
             it.isSuccessful
         }
     }
 
-    private fun deleteDocument(entity: Entity): Task<Boolean> {
-        Log.v(TAG, "deleteDocument -> entity: $entity | collectionPath: $collectionPath")
+    fun deleteDocument(entity: Entity): Task<Boolean> {
+        Log.v(TAG, "deleteDocument -> collectionPath: $collectionPath | entity: $entity")
 
-        return deleteDocument(entity.documentReference.id)
+        entity.identifier?.let { identifier ->
+            return deleteDocument(identifier)
+        }
     }
 
-    private fun deleteDocument(identifier: String): Task<Boolean> {
-        Log.v(TAG, "deleteDocument -> identifier: $identifier | collectionPath: $collectionPath")
+    fun deleteDocument(identifier: String): Task<Boolean> {
+        Log.v(TAG, "deleteDocument -> collectionPath: $collectionPath | identifier: $identifier")
 
         return collectionReference.document(identifier).delete().continueWith {
             it.isSuccessful
         }
     }
 
-    private fun getDocuments(): Task<List<Entity>> {
+    fun getDocuments(): Task<List<Entity>> {
         Log.v(TAG, "getDocuments -> collectionPath: $collectionPath")
 
         return collectionReference.get().continueWith { task ->
@@ -140,4 +218,4 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
     }
 }
 
-typealias RepositoryListener<T> = (entity: T?, exception: Exception?) -> Unit
+typealias RepositoryEventCallback<T> = (data: T?, exception: Exception?) -> Unit

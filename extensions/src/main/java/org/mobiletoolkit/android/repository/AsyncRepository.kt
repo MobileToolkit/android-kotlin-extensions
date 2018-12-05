@@ -11,9 +11,16 @@ interface AsyncRepository<Entity : Model<Identifier>, Identifier> {
 
     fun get(identifier: Identifier, onCompleteListener: OnCompleteListener<Entity?>)
 
-    fun create(entity: Entity, onCompleteListener: OnCompleteListener<Boolean>)
+    fun create(entity: Entity, identifier: Identifier? = null, onCompleteListener: OnCompleteListener<Boolean>)
+    fun create(vararg entities: Entity, onCompleteListener: OnCompleteListener<Boolean>)
+    fun create(
+        entities: List<Entity>,
+        identifiers: List<Identifier?>? = null,
+        onCompleteListener: OnCompleteListener<Boolean>
+    )
 
     fun update(entity: Entity, onCompleteListener: OnCompleteListener<Boolean>)
+    fun update(vararg entities: Entity, onCompleteListener: OnCompleteListener<Boolean>)
 
     fun delete(entity: Entity, onCompleteListener: OnCompleteListener<Boolean>)
     fun delete(identifier: Identifier, onCompleteListener: OnCompleteListener<Boolean>)
