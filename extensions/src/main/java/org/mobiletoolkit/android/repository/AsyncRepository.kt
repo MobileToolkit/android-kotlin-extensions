@@ -24,6 +24,8 @@ interface AsyncRepository<Entity : Model<Identifier>, Identifier> {
 
     fun delete(entity: Entity, onCompleteListener: OnCompleteListener<Boolean>)
     fun delete(identifier: Identifier, onCompleteListener: OnCompleteListener<Boolean>)
+    fun delete(vararg entities: Entity, onCompleteListener: OnCompleteListener<Boolean>)
+    fun delete(vararg identifiers: Identifier, onCompleteListener: OnCompleteListener<Boolean>)
 
     fun get(onCompleteListener: OnCompleteListener<List<Entity>>)
 }

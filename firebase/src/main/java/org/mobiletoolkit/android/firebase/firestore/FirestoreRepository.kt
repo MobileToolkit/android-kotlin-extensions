@@ -60,7 +60,7 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
     override fun create(vararg entities: Entity, onCompleteListener: OnCompleteListener<Boolean>) {
         Log.v(TAG, "create -> collectionPath: $collectionPath | entities: $entities")
 
-        createDocuments(entities.toList()).addOnCompleteListener(onCompleteListener)
+        create(entities.toList(), onCompleteListener = onCompleteListener)
     }
 
     override fun create(
@@ -95,6 +95,18 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         Log.v(TAG, "delete -> collectionPath: $collectionPath | identifier: $identifier")
 
         deleteDocument(identifier).addOnCompleteListener(onCompleteListener)
+    }
+
+    override fun delete(vararg entities: Entity, onCompleteListener: OnCompleteListener<Boolean>) {
+        Log.v(TAG, "delete -> collectionPath: $collectionPath | entities: $entities")
+
+        deleteDocuments(entities.toList()).addOnCompleteListener(onCompleteListener)
+    }
+
+    override fun delete(vararg identifiers: String, onCompleteListener: OnCompleteListener<Boolean>) {
+        Log.v(TAG, "delete -> collectionPath: $collectionPath | identifiers: $identifiers")
+
+        deleteDocuments(identifiers = identifiers.toList()).addOnCompleteListener(onCompleteListener)
     }
 
     override fun get(onCompleteListener: OnCompleteListener<List<Entity>>) {
@@ -205,6 +217,31 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         Log.v(TAG, "deleteDocument -> collectionPath: $collectionPath | identifier: $identifier")
 
         return collectionReference.document(identifier).delete().continueWith {
+            it.isSuccessful
+        }
+    }
+
+    fun deleteDocuments(entities: List<Entity>? = null, identifiers: List<String?>? = null): Task<Boolean> {
+        Log.v(
+            TAG,
+            "deleteDocuments -> collectionPath: $collectionPath | entities: $entities | identifiers: $identifiers"
+        )
+
+        //TODO - split into batches of 20
+
+        val batch = db.batch()
+
+        entities?.forEach { entity ->
+            entity.documentReference?.let { docRef ->
+                batch.delete(docRef)
+            }
+        }
+
+        identifiers?.filterNotNull()?.forEach { identifier ->
+            batch.delete(collectionReference.document(identifier))
+        }
+
+        return batch.commit().continueWith {
             it.isSuccessful
         }
     }
