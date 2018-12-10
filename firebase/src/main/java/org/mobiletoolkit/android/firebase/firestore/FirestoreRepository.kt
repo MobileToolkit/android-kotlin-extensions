@@ -11,7 +11,7 @@ import org.mobiletoolkit.android.repository.AsyncRepository
 /**
  * Created by Sebastian Owodzin on 14/08/2018.
  */
-interface FirestoreRepository<Entity : Model> : AsyncRepository<String, Entity> {
+interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String, Entity> {
 
     companion object {
         private const val TAG = "FirestoreRepository"
@@ -39,7 +39,7 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<String, Entity> 
         onCompleteListener: OnCompleteListener<Boolean>
     ) {
         if (debugEnabled) {
-            Log.d(TAG, "exists -> collectionPath: $collectionPath | identifier: $identifier")
+            Log.d(TAG, "exists -> collectionPath: $collectionPath | _identifier: $identifier")
         }
 
         documentExists(identifier).addOnCompleteListener(onCompleteListener)
@@ -50,7 +50,7 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<String, Entity> 
         onCompleteListener: OnCompleteListener<Entity?>
     ) {
         if (debugEnabled) {
-            Log.d(TAG, "get -> collectionPath: $collectionPath | identifier: $identifier")
+            Log.d(TAG, "get -> collectionPath: $collectionPath | _identifier: $identifier")
         }
 
         getDocument(identifier).addOnCompleteListener(onCompleteListener)
@@ -62,7 +62,7 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<String, Entity> 
         onCompleteListener: OnCompleteListener<Boolean>
     ) {
         if (debugEnabled) {
-            Log.d(TAG, "create -> collectionPath: $collectionPath | entity: $entity | identifier: $identifier")
+            Log.d(TAG, "create -> collectionPath: $collectionPath | entity: $entity | _identifier: $identifier")
         }
 
         createDocument(entity, identifier).addOnCompleteListener(onCompleteListener)
@@ -129,7 +129,7 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<String, Entity> 
         onCompleteListener: OnCompleteListener<Boolean>
     ) {
         if (debugEnabled) {
-            Log.d(TAG, "delete -> collectionPath: $collectionPath | identifier: $identifier")
+            Log.d(TAG, "delete -> collectionPath: $collectionPath | _identifier: $identifier")
         }
 
         deleteDocument(identifier).addOnCompleteListener(onCompleteListener)
@@ -171,7 +171,7 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<String, Entity> 
         identifier: String
     ): Task<Boolean> {
         if (debugEnabled) {
-            Log.d(TAG, "documentExists -> collectionPath: $collectionPath | identifier: $identifier")
+            Log.d(TAG, "documentExists -> collectionPath: $collectionPath | _identifier: $identifier")
         }
 
         return collectionReference.document(identifier).get().continueWith {
@@ -183,7 +183,7 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<String, Entity> 
         identifier: String
     ): Task<Entity?> {
         if (debugEnabled) {
-            Log.d(TAG, "getDocument -> collectionPath: $collectionPath | identifier: $identifier")
+            Log.d(TAG, "getDocument -> collectionPath: $collectionPath | _identifier: $identifier")
         }
 
         return collectionReference.document(identifier).get().continueWith {
@@ -196,7 +196,7 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<String, Entity> 
         identifier: String? = null
     ): Task<Boolean> {
         if (debugEnabled) {
-            Log.d(TAG, "createDocument -> collectionPath: $collectionPath | entity: $entity | identifier: $identifier")
+            Log.d(TAG, "createDocument -> collectionPath: $collectionPath | entity: $entity | _identifier: $identifier")
         }
 
         return with(collectionReference) {
@@ -213,7 +213,10 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<String, Entity> 
         identifiers: List<String?>? = null
     ): Task<Boolean> {
         if (debugEnabled) {
-            Log.d(TAG, "createDocuments -> collectionPath: $collectionPath | entities: $entities | identifier: $identifiers")
+            Log.d(
+                TAG,
+                "createDocuments -> collectionPath: $collectionPath | entities: $entities | _identifier: $identifiers"
+            )
         }
 
         //TODO - split into batches of 20
@@ -242,7 +245,7 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<String, Entity> 
             Log.d(TAG, "updateDocument -> collectionPath: $collectionPath | entity: $entity")
         }
 
-        entity.identifier?.let { identifier ->
+        entity._identifier?.let { identifier ->
             return collectionReference.document(identifier).set(entity, SetOptions.merge()).continueWith {
                 it.isSuccessful
             }
@@ -278,7 +281,7 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<String, Entity> 
             Log.d(TAG, "deleteDocument -> collectionPath: $collectionPath | entity: $entity")
         }
 
-        entity.identifier?.let { identifier ->
+        entity._identifier?.let { identifier ->
             return deleteDocument(identifier)
         }
     }
@@ -287,7 +290,7 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<String, Entity> 
         identifier: String
     ): Task<Boolean> {
         if (debugEnabled) {
-            Log.d(TAG, "deleteDocument -> collectionPath: $collectionPath | identifier: $identifier")
+            Log.d(TAG, "deleteDocument -> collectionPath: $collectionPath | _identifier: $identifier")
         }
 
         return collectionReference.document(identifier).delete().continueWith {

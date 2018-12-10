@@ -9,22 +9,18 @@ import org.mobiletoolkit.android.repository.Model
 /**
  * Created by Sebastian Owodzin on 14/08/2018.
  */
-interface HasDocumentReference {
-    var documentReference: DocumentReference?
-}
-
 @IgnoreExtraProperties
-abstract class Model : Model<String>, HasDocumentReference {
+abstract class FirestoreModel : Model<String> {
 
     @get:Exclude
-    override var documentReference: DocumentReference? = null
+    var documentReference: DocumentReference? = null
 
     @get:Exclude
-    override val identifier: String?
+    override val _identifier: String?
         get() = documentReference?.id
 }
 
-fun <Entity : HasDocumentReference> DocumentSnapshot.toObjectWithReference(valueType: Class<Entity>): Entity? =
+fun <Entity : FirestoreModel> DocumentSnapshot.toObjectWithReference(valueType: Class<Entity>): Entity? =
     toObject(valueType)?.let {
         it.documentReference = reference
 

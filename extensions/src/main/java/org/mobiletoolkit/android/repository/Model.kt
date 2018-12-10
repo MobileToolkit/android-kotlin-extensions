@@ -5,5 +5,5 @@ package org.mobiletoolkit.android.repository
  */
 interface Model<Identifier> {
 
-    val identifier: Identifier?
+    val _identifier: Identifier?
 }
