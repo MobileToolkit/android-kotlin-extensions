@@ -1,31 +1,31 @@
 package org.mobiletoolkit.android.repository
 
-import com.google.android.gms.tasks.OnCompleteListener
-
 /**
  * Created by Sebastian Owodzin on 14/08/2018.
  */
-interface AsyncRepository<Entity : Model<Identifier>, Identifier> {
+interface AsyncRepository<Identifier, Entity : Model<Identifier>> {
 
-    fun exists(identifier: Identifier, onCompleteListener: OnCompleteListener<Boolean>)
+    fun exists(identifier: Identifier, callback: AsyncRepositoryCallback<Boolean>)
 
-    fun get(identifier: Identifier, onCompleteListener: OnCompleteListener<Entity?>)
+    fun get(identifier: Identifier, callback: AsyncRepositoryCallback<Entity?>)
 
-    fun create(entity: Entity, identifier: Identifier? = null, onCompleteListener: OnCompleteListener<Boolean>)
-    fun create(vararg entities: Entity, onCompleteListener: OnCompleteListener<Boolean>)
+    fun create(entity: Entity, identifier: Identifier? = null, callback: AsyncRepositoryCallback<Boolean>)
+    fun create(vararg entities: Entity, callback: AsyncRepositoryCallback<Boolean>)
     fun create(
         entities: List<Entity>,
         identifiers: List<Identifier?>? = null,
-        onCompleteListener: OnCompleteListener<Boolean>
+        callback: AsyncRepositoryCallback<Boolean>
     )
 
-    fun update(entity: Entity, onCompleteListener: OnCompleteListener<Boolean>)
-    fun update(vararg entities: Entity, onCompleteListener: OnCompleteListener<Boolean>)
+    fun update(entity: Entity, callback: AsyncRepositoryCallback<Boolean>)
+    fun update(vararg entities: Entity, callback: AsyncRepositoryCallback<Boolean>)
 
-    fun delete(entity: Entity, onCompleteListener: OnCompleteListener<Boolean>)
-    fun delete(identifier: Identifier, onCompleteListener: OnCompleteListener<Boolean>)
-    fun delete(vararg entities: Entity, onCompleteListener: OnCompleteListener<Boolean>)
-    fun delete(vararg identifiers: Identifier, onCompleteListener: OnCompleteListener<Boolean>)
+    fun delete(entity: Entity, callback: AsyncRepositoryCallback<Boolean>)
+    fun delete(identifier: Identifier, callback: AsyncRepositoryCallback<Boolean>)
+    fun delete(vararg entities: Entity, callback: AsyncRepositoryCallback<Boolean>)
+    fun delete(vararg identifiers: Identifier, callback: AsyncRepositoryCallback<Boolean>)
 
-    fun get(onCompleteListener: OnCompleteListener<List<Entity>>)
+    fun get(callback: AsyncRepositoryCallback<List<Entity>>)
 }
+
+typealias AsyncRepositoryCallback<T> = (data: T?, exception: Exception?) -> Unit

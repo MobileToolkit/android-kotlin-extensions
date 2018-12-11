@@ -39,7 +39,6 @@ android {
 dependencies {
     implementation "com.android.support:appcompat-v7:${rootProject.ext.androidSupportLibraryVersion}"
     implementation "com.android.support:support-v4:${rootProject.ext.androidSupportLibraryVersion}"
-    api 'com.google.android.gms:play-services-base:16.0.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${rootProject.ext.kotlinVersion}"
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

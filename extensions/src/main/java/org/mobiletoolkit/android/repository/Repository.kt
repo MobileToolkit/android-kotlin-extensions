@@ -3,7 +3,7 @@ package org.mobiletoolkit.android.repository
 /**
  * Created by Sebastian Owodzin on 14/08/2018.
  */
-interface Repository<Entity : Model<Identifier>, Identifier> {
+interface Repository<Identifier, Entity : Model<Identifier>> {
 
     fun exists(identifier: Identifier): Boolean
 

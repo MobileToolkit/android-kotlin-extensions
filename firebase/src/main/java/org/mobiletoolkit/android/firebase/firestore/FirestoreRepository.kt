@@ -11,7 +11,7 @@ import org.mobiletoolkit.android.repository.AsyncRepository
 /**
  * Created by Sebastian Owodzin on 14/08/2018.
  */
-interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> {
+interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String, Entity> {
 
     companion object {
         private const val TAG = "FirestoreRepository"
@@ -31,117 +31,173 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
     val collectionReference: CollectionReference
         get() = db.collection(collectionPath)
 
-    override fun exists(identifier: String, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "exists -> collectionPath: $collectionPath | identifier: $identifier")
+    val debugEnabled: Boolean
+        get() = false
+
+    fun exists(
+        identifier: String,
+        onCompleteListener: OnCompleteListener<Boolean>
+    ) {
+        if (debugEnabled) {
+            Log.d(TAG, "exists -> collectionPath: $collectionPath | _identifier: $identifier")
+        }
 
         documentExists(identifier).addOnCompleteListener(onCompleteListener)
     }
 
-    override fun get(identifier: String, onCompleteListener: OnCompleteListener<Entity?>) {
-        Log.v(TAG, "get -> collectionPath: $collectionPath | identifier: $identifier")
+    fun get(
+        identifier: String,
+        onCompleteListener: OnCompleteListener<Entity?>
+    ) {
+        if (debugEnabled) {
+            Log.d(TAG, "get -> collectionPath: $collectionPath | _identifier: $identifier")
+        }
 
         getDocument(identifier).addOnCompleteListener(onCompleteListener)
     }
 
-    fun get(identifier: String, callback: RepositoryEventCallback<Entity>) {
-        Log.v(TAG, "get -> collectionPath: $collectionPath | identifier: $identifier")
-
-        collectionReference.document(identifier).addSnapshotListener { documentSnapshot, exception ->
-            callback(documentSnapshot?.toObjectWithReference(entityClazz), exception)
+    fun create(
+        entity: Entity,
+        identifier: String?,
+        onCompleteListener: OnCompleteListener<Boolean>
+    ) {
+        if (debugEnabled) {
+            Log.d(TAG, "create -> collectionPath: $collectionPath | entity: $entity | _identifier: $identifier")
         }
-    }
-
-    override fun create(entity: Entity, identifier: String?, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "create -> collectionPath: $collectionPath | entity: $entity | identifier: $identifier")
 
         createDocument(entity, identifier).addOnCompleteListener(onCompleteListener)
     }
 
-    override fun create(vararg entities: Entity, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "create -> collectionPath: $collectionPath | entities: $entities")
+    fun create(
+        vararg entities: Entity,
+        onCompleteListener: OnCompleteListener<Boolean>
+    ) {
+        if (debugEnabled) {
+            Log.d(TAG, "create -> collectionPath: $collectionPath | entities: $entities")
+        }
 
-        create(entities.toList(), onCompleteListener = onCompleteListener)
+        createDocuments(entities.toList()).addOnCompleteListener(onCompleteListener)
     }
 
-    override fun create(
+    fun create(
         entities: List<Entity>,
         identifiers: List<String?>?,
         onCompleteListener: OnCompleteListener<Boolean>
     ) {
-        Log.v(TAG, "create -> collectionPath: $collectionPath | entities: $entities | identifiers: $identifiers")
+        if (debugEnabled) {
+            Log.d(TAG, "create -> collectionPath: $collectionPath | entities: $entities | identifiers: $identifiers")
+        }
 
         createDocuments(entities, identifiers).addOnCompleteListener(onCompleteListener)
     }
 
-    override fun update(entity: Entity, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "update -> collectionPath: $collectionPath | entity: $entity")
+    fun update(
+        entity: Entity,
+        onCompleteListener: OnCompleteListener<Boolean>
+    ) {
+        if (debugEnabled) {
+            Log.d(TAG, "update -> collectionPath: $collectionPath | entity: $entity")
+        }
 
         updateDocument(entity).addOnCompleteListener(onCompleteListener)
     }
 
-    override fun update(vararg entities: Entity, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "update -> collectionPath: $collectionPath | entities: $entities")
+    fun update(
+        vararg entities: Entity,
+        onCompleteListener: OnCompleteListener<Boolean>
+    ) {
+        if (debugEnabled) {
+            Log.d(TAG, "update -> collectionPath: $collectionPath | entities: $entities")
+        }
 
         updateDocuments(entities.toList()).addOnCompleteListener(onCompleteListener)
     }
 
-    override fun delete(entity: Entity, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "delete -> collectionPath: $collectionPath | entity: $entity")
+    fun delete(
+        entity: Entity,
+        onCompleteListener: OnCompleteListener<Boolean>
+    ) {
+        if (debugEnabled) {
+            Log.d(TAG, "delete -> collectionPath: $collectionPath | entity: $entity")
+        }
 
         deleteDocument(entity).addOnCompleteListener(onCompleteListener)
     }
 
-    override fun delete(identifier: String, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "delete -> collectionPath: $collectionPath | identifier: $identifier")
+    fun delete(
+        identifier: String,
+        onCompleteListener: OnCompleteListener<Boolean>
+    ) {
+        if (debugEnabled) {
+            Log.d(TAG, "delete -> collectionPath: $collectionPath | _identifier: $identifier")
+        }
 
         deleteDocument(identifier).addOnCompleteListener(onCompleteListener)
     }
 
-    override fun delete(vararg entities: Entity, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "delete -> collectionPath: $collectionPath | entities: $entities")
+    fun delete(
+        vararg entities: Entity,
+        onCompleteListener: OnCompleteListener<Boolean>
+    ) {
+        if (debugEnabled) {
+            Log.d(TAG, "delete -> collectionPath: $collectionPath | entities: $entities")
+        }
 
         deleteDocuments(entities.toList()).addOnCompleteListener(onCompleteListener)
     }
 
-    override fun delete(vararg identifiers: String, onCompleteListener: OnCompleteListener<Boolean>) {
-        Log.v(TAG, "delete -> collectionPath: $collectionPath | identifiers: $identifiers")
+    fun delete(
+        vararg identifiers: String,
+        onCompleteListener: OnCompleteListener<Boolean>
+    ) {
+        if (debugEnabled) {
+            Log.d(TAG, "delete -> collectionPath: $collectionPath | identifiers: $identifiers")
+        }
 
         deleteDocuments(identifiers = identifiers.toList()).addOnCompleteListener(onCompleteListener)
     }
 
-    override fun get(onCompleteListener: OnCompleteListener<List<Entity>>) {
-        Log.v(TAG, "get -> collectionPath: $collectionPath")
+    fun get(
+        onCompleteListener: OnCompleteListener<List<Entity>>
+    ) {
+        if (debugEnabled) {
+            Log.d(TAG, "get -> collectionPath: $collectionPath")
+        }
 
         getDocuments().addOnCompleteListener(onCompleteListener)
     }
 
-    fun get(callback: RepositoryEventCallback<List<Entity>>) {
-        Log.v(TAG, "get -> collectionPath: $collectionPath")
-
-        collectionReference.addSnapshotListener { querySnapshot, exception ->
-            callback(querySnapshot?.mapNotNull { it.toObjectWithReference(entityClazz) } ?: listOf(),
-                exception)
+    fun documentExists(
+        identifier: String
+    ): Task<Boolean> {
+        if (debugEnabled) {
+            Log.d(TAG, "documentExists -> collectionPath: $collectionPath | _identifier: $identifier")
         }
-    }
-
-    fun documentExists(identifier: String): Task<Boolean> {
-        Log.v(TAG, "documentExists -> collectionPath: $collectionPath | identifier: $identifier")
 
         return collectionReference.document(identifier).get().continueWith {
             it.result?.exists() == true
         }
     }
 
-    fun getDocument(identifier: String): Task<Entity?> {
-        Log.v(TAG, "getDocument -> collectionPath: $collectionPath | identifier: $identifier")
+    fun getDocument(
+        identifier: String
+    ): Task<Entity?> {
+        if (debugEnabled) {
+            Log.d(TAG, "getDocument -> collectionPath: $collectionPath | _identifier: $identifier")
+        }
 
         return collectionReference.document(identifier).get().continueWith {
             it.result?.toObjectWithReference(entityClazz)
         }
     }
 
-    fun createDocument(entity: Entity, identifier: String? = null): Task<Boolean> {
-        Log.v(TAG, "createDocument -> collectionPath: $collectionPath | entity: $entity | identifier: $identifier")
+    fun createDocument(
+        entity: Entity,
+        identifier: String? = null
+    ): Task<Boolean> {
+        if (debugEnabled) {
+            Log.d(TAG, "createDocument -> collectionPath: $collectionPath | entity: $entity | _identifier: $identifier")
+        }
 
         return with(collectionReference) {
             (identifier?.let { docId ->
@@ -152,11 +208,16 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         }
     }
 
-    fun createDocuments(entities: List<Entity>, identifiers: List<String?>? = null): Task<Boolean> {
-        Log.v(
-            TAG,
-            "createDocuments -> collectionPath: $collectionPath | entities: $entities | identifier: $identifiers"
-        )
+    fun createDocuments(
+        entities: List<Entity>,
+        identifiers: List<String?>? = null
+    ): Task<Boolean> {
+        if (debugEnabled) {
+            Log.d(
+                TAG,
+                "createDocuments -> collectionPath: $collectionPath | entities: $entities | _identifier: $identifiers"
+            )
+        }
 
         //TODO - split into batches of 20
 
@@ -177,18 +238,26 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         }
     }
 
-    fun updateDocument(entity: Entity): Task<Boolean> {
-        Log.v(TAG, "updateDocument -> collectionPath: $collectionPath | entity: $entity")
+    fun updateDocument(
+        entity: Entity
+    ): Task<Boolean> {
+        if (debugEnabled) {
+            Log.d(TAG, "updateDocument -> collectionPath: $collectionPath | entity: $entity")
+        }
 
-        entity.identifier?.let { identifier ->
+        entity._identifier?.let { identifier ->
             return collectionReference.document(identifier).set(entity, SetOptions.merge()).continueWith {
                 it.isSuccessful
             }
         }
     }
 
-    fun updateDocuments(entities: List<Entity>): Task<Boolean> {
-        Log.v(TAG, "updateDocuments -> collectionPath: $collectionPath | entities: $entities")
+    fun updateDocuments(
+        entities: List<Entity>
+    ): Task<Boolean> {
+        if (debugEnabled) {
+            Log.d(TAG, "updateDocuments -> collectionPath: $collectionPath | entities: $entities")
+        }
 
         //TODO - split into batches of 20
 
@@ -205,27 +274,37 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
         }
     }
 
-    fun deleteDocument(entity: Entity): Task<Boolean> {
-        Log.v(TAG, "deleteDocument -> collectionPath: $collectionPath | entity: $entity")
+    fun deleteDocument(
+        entity: Entity
+    ): Task<Boolean> {
+        if (debugEnabled) {
+            Log.d(TAG, "deleteDocument -> collectionPath: $collectionPath | entity: $entity")
+        }
 
-        entity.identifier?.let { identifier ->
+        entity._identifier?.let { identifier ->
             return deleteDocument(identifier)
         }
     }
 
-    fun deleteDocument(identifier: String): Task<Boolean> {
-        Log.v(TAG, "deleteDocument -> collectionPath: $collectionPath | identifier: $identifier")
+    fun deleteDocument(
+        identifier: String
+    ): Task<Boolean> {
+        if (debugEnabled) {
+            Log.d(TAG, "deleteDocument -> collectionPath: $collectionPath | _identifier: $identifier")
+        }
 
         return collectionReference.document(identifier).delete().continueWith {
             it.isSuccessful
         }
     }
 
-    fun deleteDocuments(entities: List<Entity>? = null, identifiers: List<String?>? = null): Task<Boolean> {
-        Log.v(
-            TAG,
-            "deleteDocuments -> collectionPath: $collectionPath | entities: $entities | identifiers: $identifiers"
-        )
+    fun deleteDocuments(
+        entities: List<Entity>? = null,
+        identifiers: List<String?>? = null
+    ): Task<Boolean> {
+        if (debugEnabled) {
+            Log.d(TAG, "deleteDocuments -> collectionPath: $collectionPath | entities: $entities | identifiers: $identifiers")
+        }
 
         //TODO - split into batches of 20
 
@@ -247,12 +326,14 @@ interface FirestoreRepository<Entity : Model> : AsyncRepository<Entity, String> 
     }
 
     fun getDocuments(): Task<List<Entity>> {
-        Log.v(TAG, "getDocuments -> collectionPath: $collectionPath")
+        if (debugEnabled) {
+            Log.d(TAG, "getDocuments -> collectionPath: $collectionPath")
+        }
 
         return collectionReference.get().continueWith { task ->
             task.result?.mapNotNull { it.toObjectWithReference(entityClazz) } ?: listOf()
         }
     }
-}
 
-typealias RepositoryEventCallback<T> = (data: T?, exception: Exception?) -> Unit
+
+}
