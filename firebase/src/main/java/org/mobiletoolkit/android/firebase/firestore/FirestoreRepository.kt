@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import org.mobiletoolkit.android.extensions.toIntRanges
 import org.mobiletoolkit.android.repository.AsyncRepository
 
 /**
@@ -325,6 +326,25 @@ interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String,
         }
     }
 
+//    fun batch(
+//        createData: List<Pair<Entity, String?>>,
+//        updateData: List<Entity>,
+//        deleteData: List<Pair<Entity?, String?>>
+//    ): Task<Boolean> {
+//        if (debugEnabled) {
+//            Log.d(
+//                TAG,
+//                "batch -> collectionPath: $collectionPath | createData: $createData | updateData: $updateData"
+//            )
+//        }
+//
+//        val operations = createData.map
+//
+//        createData.count().toIntRanges(20).forEach {
+//
+//        }
+//    }
+
     fun getDocuments(): Task<List<Entity>> {
         if (debugEnabled) {
             Log.d(TAG, "getDocuments -> collectionPath: $collectionPath")
@@ -334,6 +354,10 @@ interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String,
             task.result?.mapNotNull { it.toObjectWithReference(entityClazz) } ?: listOf()
         }
     }
-
-
 }
+
+//data class Operation<Entity, Identifier>(
+//    val createData: Pair<Entity, Identifier?>? = null,
+//    val updateData: Entity? = null,
+//    val deleteData: Pair<Entity?, Identifier?>? = null
+//)

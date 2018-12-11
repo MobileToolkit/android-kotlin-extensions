@@ -137,7 +137,7 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
             Log.d(TAG, "get -> collectionPath: $collectionPath")
         }
 
-        collectionReference.addSnapshotListener { querySnapshot, exception ->
+        collectionReference .addSnapshotListener { querySnapshot, exception ->
             callback(
                 querySnapshot?.documents?.mapNotNull { it.toObjectWithReference(entityClazz) } ?: listOf(),
                 querySnapshot?.documentChanges?.mapNotNull {
