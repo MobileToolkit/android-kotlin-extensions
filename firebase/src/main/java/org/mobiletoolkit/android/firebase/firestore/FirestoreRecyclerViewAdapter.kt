@@ -26,5 +26,5 @@ abstract class FirestoreRecyclerViewAdapter<ViewHolder : RecyclerView.ViewHolder
 
     override fun getItemCount(): Int = data.count()
 
-    protected open fun getDataItem(position: Int): Entity = data[position]
+    protected open fun getDataItem(position: Int): Entity? = data[position]
 }
