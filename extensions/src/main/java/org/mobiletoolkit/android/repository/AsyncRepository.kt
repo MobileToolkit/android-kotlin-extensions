@@ -28,4 +28,4 @@ interface AsyncRepository<Identifier, Entity : Model<Identifier>> {
     fun get(callback: AsyncRepositoryCallback<List<Entity>>)
 }
 
-typealias AsyncRepositoryCallback<T> = (data: T?, exception: Exception?) -> Unit
+typealias AsyncRepositoryCallback<DataType> = (data: DataType?, exception: Exception?) -> Unit
