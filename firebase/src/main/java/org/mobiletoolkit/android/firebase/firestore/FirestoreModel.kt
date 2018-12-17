@@ -12,12 +12,10 @@ import org.mobiletoolkit.android.repository.Model
 @IgnoreExtraProperties
 abstract class FirestoreModel : Model<String> {
 
-    @get:Exclude
+    @Exclude
     var documentReference: DocumentReference? = null
 
-    @get:Exclude
-    override val _identifier: String?
-        get() = documentReference?.id
+    override fun _identifier() = documentReference?.id
 }
 
 fun <Entity : FirestoreModel> DocumentSnapshot.toObjectWithReference(valueType: Class<Entity>): Entity? =
