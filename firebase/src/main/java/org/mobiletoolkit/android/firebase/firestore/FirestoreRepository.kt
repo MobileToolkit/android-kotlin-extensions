@@ -6,7 +6,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import org.mobiletoolkit.android.extensions.toIntRanges
 import org.mobiletoolkit.android.repository.AsyncRepository
 
 /**
@@ -246,7 +245,7 @@ interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String,
             Log.d(TAG, "updateDocument -> collectionPath: $collectionPath | entity: $entity")
         }
 
-        entity._identifier?.let { identifier ->
+        entity._identifier()?.let { identifier ->
             return collectionReference.document(identifier).set(entity, SetOptions.merge()).continueWith {
                 it.isSuccessful
             }
@@ -282,7 +281,7 @@ interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String,
             Log.d(TAG, "deleteDocument -> collectionPath: $collectionPath | entity: $entity")
         }
 
-        entity._identifier?.let { identifier ->
+        entity._identifier()?.let { identifier ->
             return deleteDocument(identifier)
         }
     }
