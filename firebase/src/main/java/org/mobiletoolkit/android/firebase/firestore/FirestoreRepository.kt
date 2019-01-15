@@ -264,7 +264,7 @@ interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String,
         val batch = db.batch()
 
         entities.forEach { entity ->
-            entity.documentReference?.let { docRef ->
+            entity._documentReference?.let { docRef ->
                 batch.set(docRef, entity, SetOptions.merge())
             }
         }
@@ -311,7 +311,7 @@ interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String,
         val batch = db.batch()
 
         entities?.forEach { entity ->
-            entity.documentReference?.let { docRef ->
+            entity._documentReference?.let { docRef ->
                 batch.delete(docRef)
             }
         }
