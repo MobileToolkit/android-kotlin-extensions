@@ -3,6 +3,7 @@ package org.mobiletoolkit.android.firebase.firestore
 import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -245,11 +246,11 @@ interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String,
             Log.d(TAG, "updateDocument -> collectionPath: $collectionPath | entity: $entity")
         }
 
-        entity._identifier()?.let { identifier ->
-            return collectionReference.document(identifier).set(entity, SetOptions.merge()).continueWith {
+        return entity._identifier()?.let { identifier ->
+            collectionReference.document(identifier).set(entity, SetOptions.merge()).continueWith {
                 it.isSuccessful
             }
-        }
+        } ?: Tasks.forResult(false)
     }
 
     fun updateDocuments(
@@ -264,7 +265,7 @@ interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String,
         val batch = db.batch()
 
         entities.forEach { entity ->
-            entity._documentReference?.let { docRef ->
+            entity.documentReference?.let { docRef ->
                 batch.set(docRef, entity, SetOptions.merge())
             }
         }
@@ -311,7 +312,7 @@ interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String,
         val batch = db.batch()
 
         entities?.forEach { entity ->
-            entity._documentReference?.let { docRef ->
+            entity.documentReference?.let { docRef ->
                 batch.delete(docRef)
             }
         }
