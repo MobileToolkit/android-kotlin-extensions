@@ -2,12 +2,13 @@ package org.mobiletoolkit.android.firebase.firestore
 
 import android.util.Log
 import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.ListenerRegistration
 import org.mobiletoolkit.android.repository.AsyncRepositoryCallback
 
 /**
  * Created by Sebastian Owodzin on 10/12/2018.
  */
-interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreRepository<Entity> {
+abstract class SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreRepository<Entity> {
 
     companion object {
         private const val TAG = "FirestoreRepository"
@@ -18,7 +19,9 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
             Log.d(TAG, "exists -> collectionPath: $collectionPath | _identifier: $identifier")
         }
 
-        documentExists(identifier).addOnCompleteListener { callback(it.result, it.exception) }
+        documentExists(identifier).addOnCompleteListener {
+            callback(if (it.isSuccessful) it.result else null, it.exception)
+        }
     }
 
     override fun get(identifier: String, callback: AsyncRepositoryCallback<Entity?>) {
@@ -26,7 +29,9 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
             Log.d(TAG, "get -> collectionPath: $collectionPath | _identifier: $identifier")
         }
 
-        getDocument(identifier).addOnCompleteListener { callback(it.result, it.exception) }
+        getDocument(identifier).addOnCompleteListener {
+            callback(if (it.isSuccessful) it.result else null, it.exception)
+        }
     }
 
     override fun create(entity: Entity, identifier: String?, callback: AsyncRepositoryCallback<Boolean>) {
@@ -34,7 +39,9 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
             Log.d(TAG, "create -> collectionPath: $collectionPath | entity: $entity | _identifier: $identifier")
         }
 
-        createDocument(entity, identifier).addOnCompleteListener { callback(it.result, it.exception) }
+        createDocument(entity, identifier).addOnCompleteListener {
+            callback(if (it.isSuccessful) it.result else null, it.exception)
+        }
     }
 
     override fun create(vararg entities: Entity, callback: AsyncRepositoryCallback<Boolean>) {
@@ -42,7 +49,9 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
             Log.d(TAG, "create -> collectionPath: $collectionPath | entities: $entities")
         }
 
-        createDocuments(entities.toList()).addOnCompleteListener { callback(it.result, it.exception) }
+        createDocuments(entities.toList()).addOnCompleteListener {
+            callback(if (it.isSuccessful) it.result else null, it.exception)
+        }
     }
 
     override fun create(
@@ -54,7 +63,9 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
             Log.d(TAG, "create -> collectionPath: $collectionPath | entities: $entities | identifiers: $identifiers")
         }
 
-        createDocuments(entities, identifiers).addOnCompleteListener { callback(it.result, it.exception) }
+        createDocuments(entities, identifiers).addOnCompleteListener {
+            callback(if (it.isSuccessful) it.result else null, it.exception)
+        }
     }
 
     override fun update(entity: Entity, callback: AsyncRepositoryCallback<Boolean>) {
@@ -62,7 +73,9 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
             Log.d(TAG, "update -> collectionPath: $collectionPath | entity: $entity")
         }
 
-        updateDocument(entity).addOnCompleteListener { callback(it.result, it.exception) }
+        updateDocument(entity).addOnCompleteListener {
+            callback(if (it.isSuccessful) it.result else null, it.exception)
+        }
     }
 
     override fun update(vararg entities: Entity, callback: AsyncRepositoryCallback<Boolean>) {
@@ -70,7 +83,9 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
             Log.d(TAG, "update -> collectionPath: $collectionPath | entities: $entities")
         }
 
-        updateDocuments(entities.toList()).addOnCompleteListener { callback(it.result, it.exception) }
+        updateDocuments(entities.toList()).addOnCompleteListener {
+            callback(if (it.isSuccessful) it.result else null, it.exception)
+        }
     }
 
     override fun delete(entity: Entity, callback: AsyncRepositoryCallback<Boolean>) {
@@ -78,7 +93,9 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
             Log.d(TAG, "delete -> collectionPath: $collectionPath | entity: $entity")
         }
 
-        deleteDocument(entity).addOnCompleteListener { callback(it.result, it.exception) }
+        deleteDocument(entity).addOnCompleteListener {
+            callback(if (it.isSuccessful) it.result else null, it.exception)
+        }
     }
 
     override fun delete(identifier: String, callback: AsyncRepositoryCallback<Boolean>) {
@@ -86,7 +103,9 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
             Log.d(TAG, "delete -> collectionPath: $collectionPath | _identifier: $identifier")
         }
 
-        deleteDocument(identifier).addOnCompleteListener { callback(it.result, it.exception) }
+        deleteDocument(identifier).addOnCompleteListener {
+            callback(if (it.isSuccessful) it.result else null, it.exception)
+        }
     }
 
     override fun delete(vararg entities: Entity, callback: AsyncRepositoryCallback<Boolean>) {
@@ -94,7 +113,9 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
             Log.d(TAG, "delete -> collectionPath: $collectionPath | entities: $entities")
         }
 
-        deleteDocuments(entities.toList()).addOnCompleteListener { callback(it.result, it.exception) }
+        deleteDocuments(entities.toList()).addOnCompleteListener {
+            callback(if (it.isSuccessful) it.result else null, it.exception)
+        }
     }
 
     override fun delete(vararg identifiers: String, callback: AsyncRepositoryCallback<Boolean>) {
@@ -102,7 +123,9 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
             Log.d(TAG, "delete -> collectionPath: $collectionPath | identifiers: $identifiers")
         }
 
-        deleteDocuments(identifiers = identifiers.toList()).addOnCompleteListener { callback(it.result, it.exception) }
+        deleteDocuments(identifiers = identifiers.toList()).addOnCompleteListener {
+            callback(if (it.isSuccessful) it.result else null, it.exception)
+        }
     }
 
     override fun get(callback: AsyncRepositoryCallback<List<Entity>>) {
@@ -110,19 +133,27 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
             Log.d(TAG, "get -> collectionPath: $collectionPath")
         }
 
-        getDocuments().addOnCompleteListener { callback(it.result, it.exception) }
+        getDocuments().addOnCompleteListener {
+            callback(if (it.isSuccessful) it.result else null, it.exception)
+        }
     }
+
+    private var documentListenerRegistration: ListenerRegistration? = null
 
     fun get(
         identifier: String,
-        callback: FirestoreRepositoryListener<Entity, Entity>
-    ) {
+        repositoryListener: FirestoreRepositoryListener<Entity, Entity>
+    ): ListenerRegistration {
         if (debugEnabled) {
             Log.d(TAG, "get -> collectionPath: $collectionPath | _identifier: $identifier")
         }
 
-        collectionReference.document(identifier).addSnapshotListener { documentSnapshot, exception ->
-            callback(
+        documentListenerRegistration?.remove()
+        documentListenerRegistration = null
+
+        val listenerRegistration =
+            collectionReference.document(identifier).addSnapshotListener { documentSnapshot, exception ->
+            repositoryListener(
                 documentSnapshot?.let {
                     if (it.exists()) {
                         it.toObjectWithReference(entityClazz)
@@ -132,17 +163,26 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
                 exception
             )
         }
+
+        documentListenerRegistration = listenerRegistration
+
+        return listenerRegistration
     }
 
+    private var collectionListenerRegistration: ListenerRegistration? = null
+
     fun get(
-        callback: FirestoreRepositoryListener<List<Entity>, Entity>
-    ) {
+        repositoryListener: FirestoreRepositoryListener<List<Entity>, Entity>
+    ): ListenerRegistration {
         if (debugEnabled) {
             Log.d(TAG, "get -> collectionPath: $collectionPath")
         }
 
-        collectionReference.addSnapshotListener { querySnapshot, exception ->
-            callback(
+        collectionListenerRegistration?.remove()
+        collectionListenerRegistration = null
+
+        val listenerRegistration = collectionReference.addSnapshotListener { querySnapshot, exception ->
+            repositoryListener(
                 querySnapshot?.documents?.mapNotNull { it.toObjectWithReference(entityClazz) } ?: listOf(),
                 querySnapshot?.documentChanges?.mapNotNull {
                     Change(
@@ -155,6 +195,10 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
                 exception
             )
         }
+
+        documentListenerRegistration = listenerRegistration
+
+        return listenerRegistration
     }
 
     data class Change<T>(
