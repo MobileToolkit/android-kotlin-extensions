@@ -123,7 +123,11 @@ interface SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreReposito
 
         collectionReference.document(identifier).addSnapshotListener { documentSnapshot, exception ->
             callback(
-                documentSnapshot?.toObjectWithReference(entityClazz),
+                documentSnapshot?.let {
+                    if (it.exists()) {
+                        it.toObjectWithReference(entityClazz)
+                    } else null
+                },
                 null,
                 exception
             )

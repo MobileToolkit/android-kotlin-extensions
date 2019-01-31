@@ -191,9 +191,7 @@ interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String,
             it.result?.let { doc ->
                 if (doc.exists()) {
                     doc.toObjectWithReference(entityClazz)
-                } else {
-                    null
-                }
+                } else null
             }
         }
     }
