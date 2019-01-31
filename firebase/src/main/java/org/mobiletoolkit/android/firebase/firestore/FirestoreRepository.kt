@@ -188,7 +188,13 @@ interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String,
         }
 
         return collectionReference.document(identifier).get().continueWith {
-            it.result?.toObjectWithReference(entityClazz)
+            it.result?.let { doc ->
+                if (doc.exists()) {
+                    doc.toObjectWithReference(entityClazz)
+                } else {
+                    null
+                }
+            }
         }
     }
 
@@ -282,9 +288,9 @@ interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String,
             Log.d(TAG, "deleteDocument -> collectionPath: $collectionPath | entity: $entity")
         }
 
-        entity._identifier()?.let { identifier ->
-            return deleteDocument(identifier)
-        }
+        return entity._identifier()?.let { identifier ->
+            deleteDocument(identifier)
+        } ?: Tasks.forResult(false)
     }
 
     fun deleteDocument(
@@ -350,8 +356,10 @@ interface FirestoreRepository<Entity : FirestoreModel> : AsyncRepository<String,
             Log.d(TAG, "getDocuments -> collectionPath: $collectionPath")
         }
 
-        return collectionReference.get().continueWith { task ->
-            task.result?.mapNotNull { it.toObjectWithReference(entityClazz) } ?: listOf()
+        return collectionReference.get().continueWith {
+            it.result?.mapNotNull { doc ->
+                doc.toObjectWithReference(entityClazz)
+            } ?: listOf()
         }
     }
 }
