@@ -9,7 +9,7 @@ abstract class FirestoreRecyclerViewAdapter<ViewHolder : RecyclerView.ViewHolder
     private val repository: SimpleFirestoreRepository<Entity>
 ) : RecyclerView.Adapter<ViewHolder>() {
 
-    private val repositoryListener: FirestoreRepositoryListener<List<Entity>, Entity> = { entities, _, _ ->
+    protected open val repositoryListener: FirestoreRepositoryListener<List<Entity>, Entity> = { entities, _, _ ->
         data = entities ?: listOf()
 
         notifyDataSetChanged()
@@ -25,7 +25,7 @@ abstract class FirestoreRecyclerViewAdapter<ViewHolder : RecyclerView.ViewHolder
 
     protected open fun getDataItem(position: Int): Entity? = data[position]
 
-    protected fun reloadRepositoryData() {
+    fun reloadRepositoryData() {
         repository.get(repositoryListener)
     }
 }
