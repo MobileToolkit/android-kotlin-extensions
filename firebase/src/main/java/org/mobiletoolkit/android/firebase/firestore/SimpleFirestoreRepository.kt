@@ -140,7 +140,7 @@ abstract class SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreRep
 
     private var documentListenerRegistration: ListenerRegistration? = null
 
-    fun get(
+    open fun get(
         identifier: String,
         repositoryListener: FirestoreRepositoryListener<Entity, Entity>
     ): ListenerRegistration {
@@ -171,7 +171,7 @@ abstract class SimpleFirestoreRepository<Entity : FirestoreModel> : FirestoreRep
 
     private var collectionListenerRegistration: ListenerRegistration? = null
 
-    fun get(
+    open fun get(
         repositoryListener: FirestoreRepositoryListener<List<Entity>, Entity>
     ): ListenerRegistration {
         if (debugEnabled) {
