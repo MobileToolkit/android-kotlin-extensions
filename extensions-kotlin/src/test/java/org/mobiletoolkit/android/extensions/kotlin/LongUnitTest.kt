@@ -11,7 +11,7 @@ class LongUnitTest {
             listOf(
                 0L..19L,
                 20L..39L,
-                40L..44L
+                40L..43L
             ), 44L.toRanges(20L)
         )
 
@@ -19,8 +19,14 @@ class LongUnitTest {
             listOf(
                 0L..7L,
                 8L..15L,
-                16L..21L
+                16L..20L
             ), 21L.toRanges(8L)
+        )
+
+        assertEquals(
+            listOf(
+                0L..0L
+            ), 1L.toRanges(100L)
         )
     }
 }

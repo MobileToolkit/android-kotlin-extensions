@@ -11,7 +11,7 @@ class IntUnitTest {
             listOf(
                 0..19,
                 20..39,
-                40..44
+                40..43
             ), 44.toRanges(20)
         )
 
@@ -19,8 +19,14 @@ class IntUnitTest {
             listOf(
                 0..7,
                 8..15,
-                16..21
+                16..20
             ), 21.toRanges(8)
+        )
+
+        assertEquals(
+            listOf(
+                0..0
+            ), 1.toRanges(100)
         )
     }
 }
