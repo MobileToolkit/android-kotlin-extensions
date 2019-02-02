@@ -1,1 +1,1 @@
-include ':extensions', ':firebase'
+include ':extensions', ':extensions-kotlin'
