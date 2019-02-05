@@ -12,7 +12,7 @@ import android.view.ViewTreeObserver
  *
  * @see ViewTreeObserver.OnGlobalLayoutListener.onGlobalLayout
  */
-inline fun View.waitForLayout(crossinline block: () -> Unit) = with(viewTreeObserver) {
+inline fun View.afterGlobalLayout(crossinline block: () -> Unit) = with(viewTreeObserver) {
     addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
             viewTreeObserver.removeOnGlobalLayoutListener(this)
