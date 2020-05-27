@@ -1,9 +1,9 @@
 package org.mobiletoolkit.android.extensions.android.content.sharedpreferences.delegates
 
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
-import android.support.test.InstrumentationRegistry
-import android.support.test.runner.AndroidJUnit4
+import androidx.preference.PreferenceManager
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -32,7 +32,7 @@ class SharedPreferencesDelegatesUnitTest {
 
     @Before
     fun before() {
-        val appContext = InstrumentationRegistry.getTargetContext()
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext)
     }

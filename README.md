@@ -1,7 +1,7 @@
 # extensions-android
 
-[![Build Status](https://travis-ci.org/MobileToolkit/extensions-android.svg?branch=master)](https://travis-ci.org/MobileToolkit/extensions-android)
-
+![](https://github.com/MobileToolkit/extensions-android/workflows/.github/workflows/gradle-wrapper-validation.yml/badge.svg)
+![](https://github.com/MobileToolkit/extensions-android/workflows/.github/workflows/build-tests.yml/badge.svg)
 
 
 ## Installation
