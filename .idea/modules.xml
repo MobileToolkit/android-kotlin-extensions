@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/extensions/extensions.iml" filepath="$PROJECT_DIR$/extensions/extensions.iml" />
-      <module fileurl="file://$PROJECT_DIR$/extensions-android.iml" filepath="$PROJECT_DIR$/extensions-android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/extensions-kotlin/extensions-kotlin.iml" filepath="$PROJECT_DIR$/extensions-kotlin/extensions-kotlin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/extensions.iml" filepath="$PROJECT_DIR$/extensions/extensions.iml" group="extensions-android/extensions" />
+      <module fileurl="file://$PROJECT_DIR$/extensions-android.iml" filepath="$PROJECT_DIR$/extensions-android.iml" group="extensions-android" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions-android_buildSrc.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions-android_buildSrc.iml" group="extensions-android/extensions-android_buildSrc" />
+      <module fileurl="file://$PROJECT_DIR$/extensions-kotlin/extensions-kotlin.iml" filepath="$PROJECT_DIR$/extensions-kotlin/extensions-kotlin.iml" group="extensions-android/extensions-kotlin" />
     </modules>
   </component>
 </project>
