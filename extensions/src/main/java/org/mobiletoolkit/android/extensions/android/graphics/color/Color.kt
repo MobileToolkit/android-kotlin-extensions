@@ -1,7 +1,7 @@
 package org.mobiletoolkit.android.extensions.android.graphics.color
 
 import android.graphics.Color
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 
 /**
  * Created by Sebastian Owodzin on 23/05/2018.

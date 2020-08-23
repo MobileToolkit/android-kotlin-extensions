@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 class IntUnitTest {
 
     @Test
-    fun toRanges() {
+    fun rangesList() {
         assertEquals(
             listOf(
                 0..19,
