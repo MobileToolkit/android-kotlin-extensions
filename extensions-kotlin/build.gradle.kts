@@ -39,7 +39,7 @@ publishing {
 bintray {
     user = project.findProperty("gpr.bintrayUser") as String? ?: System.getenv("BINTRAY_USER")
     key = project.findProperty("gpr.bintrayAPIKey") as String? ?: System.getenv("BINTRAY_API_KEY")
-    dryRun = true
+    dryRun = false
     override = false
     publish = true
 
