@@ -17,11 +17,21 @@ dependencies {
 
 publishing {
     publications {
-        create<MavenPublication>("extensions-kotlin") {
+        create<MavenPublication>("extensionsKotlin") {
             from(components["android"])
             groupId = "${project.extra["groupId"]}"
-            artifactId = name
+            artifactId = "extensions-kotlin"
             version = android.defaultConfig.versionName
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/MobileToolkit/extensions-android")
+            credentials {
+                username = project.findProperty("gpr.githubUser") as String? ?: System.getenv("GITHUB_USER")
+                password = project.findProperty("gpr.githubToken") as String? ?: System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }
@@ -50,5 +60,5 @@ bintray {
         }
     }
 
-    setPublications("extensions-kotlin")
+    setPublications("extensionsKotlin")
 }

@@ -37,7 +37,7 @@ jobs:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           BINTRAY_GPG_PASSWORD: ${{ secrets.BINTRAY_GPG_PASSWORD }}
-        run: ./gradlew assembleRelease generatePomFileForFirestorePublication bintrayUpload
+        run: ./gradlew assembleRelease generatePomFileForExtensionsPublication generatePomFileForExtensionsKotlinPublication bintrayUpload
 
       - name: Publish to GitHub Packages
         env:
